@@ -1,0 +1,311 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: #fdf8f4;
+}
+
+.container {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.progressoContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  background-color: #f0e0d6;
+}
+
+.progressoBarra {
+  height: 100%;
+  background-color: #e3b383;
+  transition: width 0.4s ease;
+  border-radius: 0 10px 10px 0;
+}
+
+.capa {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 500px;
+  margin: 40px auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bgImagem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.3
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(189, 141, 114, 0.55); /* paleta */
+  z-index: 2;
+}
+
+.capaConteudo {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo {
+  max-width: 260px;
+  margin-bottom: 24px;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.3));
+}
+
+.botaoCapa {
+  background-color: #e3b383;
+  color: white;
+  font-size: 18px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.botaoCapa:hover {
+  background-color: #d49b64;
+}
+
+.categoria {
+  font-size: 1rem;
+  color: #bd8d72;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.pergunta {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.input {
+  width: 90%;
+  
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.opcaoButton {
+  padding: 12px;
+  border-radius: 10px;
+  background-color: #e3b383;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.opcaoButton:hover {
+  background-color: #bd8d72;
+}
+
+.selecionado {
+  background-color: #bd8d72 !important;
+}
+
+.button {
+  margin-top: 1rem;
+  padding: 12px 24px;
+  border: none;
+  background-color: #daae8b;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #bd8d72;
+}
+
+.mensagemErro {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.labelUpload {
+  display: inline-block;
+  background-color: #e3b383;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+}
+
+.labelUpload:hover {
+  background-color: #bd8d72;
+}
+
+.inputArquivo {
+  display: none;
+}
+
+.arquivoAnexado {
+  margin-top: 10px;
+  color: #4caf50;
+  font-size: 0.9rem;
+}
+
+
+.termoContainer {
+  background-color: #fff7f0;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-size: 1rem;
+  color: #4b3c32;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.termoContainer strong {
+  color: #BD8D72;
+  font-weight: 600;
+}
+
+.termoContainer ul {
+  padding-left: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.termoContainer li {
+  margin-bottom: 0.4rem;
+}
+
+.checkboxTermo {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.checkboxTermo input {
+  margin-right: 0.5rem;
+  transform: scale(1.2);
+}
+
+.erro {
+  color: #c0392b;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #4b3c32;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.opcao input[type='radio'] {
+  accent-color: #BD8D72;
+  transform: scale(1.2);
+}
+
+
+.mensagemFinal {
+  font-size: 1.5rem;
+  color: #BD8D72;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .pergunta {
+    font-size: 1rem;
+  }
+
+  .input,
+  .opcaoButton,
+  .button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .capa {
+    height: auto;
+    margin: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .logo {
+    max-width: 200px;
+  }
+
+  .botaoCapa {
+    font-size: 16px;
+    padding: 12px 24px;
+  }
+}
