@@ -36,16 +36,6 @@ export default function Formulario() {
     setRespostas({ ...respostas, [perguntaAtual.id]: e.target.files[0] });
   };
 
- // Função auxiliar para converter arquivo em base64
-const toBase64 = file =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-
-// Agora pode ser usada dentro de enviarFormulario
 const enviarFormulario = async () => {
   const dados = {};
 
@@ -60,16 +50,11 @@ const enviarFormulario = async () => {
   }
 
   try {
-    const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbxiDoRhOFMvJ46jLzhFu9KVI5XQ7utPhYWRMgK3HIh9tneMjWOPqQ4CrT19piMXXgDcoA/exec",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-      }
-    );
+    const response = await fetch("/.netlify/functions/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados),
+    });
 
     if (response.ok) {
       setFormularioFinalizado(true);
