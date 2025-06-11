@@ -6,8 +6,6 @@ import bg from '../../assets/moca-fita.png';
 
 export default function Formulario() {
   
-
-
  const [mostrarCapa, setMostrarCapa] = useState(true);
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [respostas, setRespostas] = useState({});
