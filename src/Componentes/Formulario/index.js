@@ -5,7 +5,7 @@ import logo from '../../assets/logo-reeducador.png';
 import bg from '../../assets/moca-fita.png';
 
 export default function Formulario() {
-  console.log('Renderizando Formulário...');
+  
 
 
  const [mostrarCapa, setMostrarCapa] = useState(true);
@@ -15,8 +15,7 @@ export default function Formulario() {
   const [formularioFinalizado, setFormularioFinalizado] = useState(false);
 
   const perguntaAtual = perguntas[indiceAtual];
-  console.log("📦 perguntas:", perguntas);
-console.log("🎯 perguntaAtual:", perguntaAtual);
+
 
   const progresso = ((indiceAtual + 1) / perguntas.length) * 100;
 
