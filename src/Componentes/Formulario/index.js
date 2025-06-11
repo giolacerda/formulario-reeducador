@@ -34,20 +34,26 @@ export default function Formulario() {
   };
 
   const enviarFormulario = async () => {
-    const formData = new FormData();
+    // Processa arquivos em base64 (se houver)
+    const dados = {};
 
-    Object.entries(respostas).forEach(([chave, valor]) => {
+    for (const [chave, valor] of Object.entries(respostas)) {
       if (valor instanceof File) {
-        formData.append(chave, valor, valor.name);
+        const base64 = await toBase64(valor);
+        dados["arquivoBase64"] = base64;
+        dados["arquivoNome"] = valor.name;
       } else {
-        formData.append(chave, valor);
+        dados[chave] = valor;
       }
-    });
+    }
 
     try {
       const response = await fetch("https://script.google.com/macros/s/AKfycbzMAT_lUicliZvePLq_bLO-qaVYGadGwZZ1kBRer3k8nHICSjcpUfOnAFAxK6JhP_eqlw/exec", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
       });
 
       if (response.ok) {
@@ -60,32 +66,42 @@ export default function Formulario() {
     }
   };
 
- 
-   const handleProxima = () => {
-  const respostaAtual = respostas[perguntaAtual.id];
-  const obrigatoria = perguntaAtual.obrigatorio !== false;
+  // Função auxiliar para converter arquivo em base64
+  const toBase64 = file =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
 
-  const invalida =
-    respostaAtual === undefined ||
-    respostaAtual === '' ||
-    (perguntaAtual.tipo === 'termo' && respostaAtual !== true) ||
-    (perguntaAtual.tipo === 'arquivo' && !(respostaAtual instanceof File));
 
-  if (obrigatoria && invalida) {
-    setErro(true);
-    return;
-  }
+  const handleProxima = () => {
+    const respostaAtual = respostas[perguntaAtual.id];
+    const obrigatoria = perguntaAtual.obrigatorio !== false;
 
-  setErro(false);
+    const invalida =
+      respostaAtual === undefined ||
+      respostaAtual === '' ||
+      (perguntaAtual.tipo === 'termo' && respostaAtual !== true) ||
+      (perguntaAtual.tipo === 'arquivo' && !(respostaAtual instanceof File));
 
-  // Última pergunta → Finaliza
-  if (indiceAtual === perguntas.length - 1) {
-    setFormularioFinalizado(true);
-    enviarFormulario(); // dispara o envio
-  } else {
-    setIndiceAtual(indiceAtual + 1);
-  }
-};
+    if (obrigatoria && invalida) {
+      setErro(true);
+      return;
+    }
+
+    setErro(false);
+
+    // Última pergunta → Finaliza
+    if (indiceAtual === perguntas.length - 1) {
+      setFormularioFinalizado(true);
+      enviarFormulario(); // dispara o envio
+    } else {
+      setIndiceAtual(indiceAtual + 1);
+       setErro(false);
+    }
+  };
 
 
   if (mostrarCapa) {
@@ -163,9 +179,23 @@ export default function Formulario() {
               </label>
             ))}
             {erro && <div className={styles.erro}>Por favor, selecione uma opção.</div>}
-            <button className={styles.button} onClick={handleProxima}>
+            <button
+              className={styles.button}
+              onClick={() => {
+                const resposta = respostas[perguntaAtual.id];
+                const obrigatoria = perguntaAtual.obrigatorio !== false;
+
+                if (obrigatoria && !resposta) {
+                  setErro(true);
+                } else {
+                  setErro(false);
+                  handleProxima();
+                }
+              }}
+            >
               Próxima
             </button>
+
           </div>
         )}
 
@@ -182,7 +212,7 @@ export default function Formulario() {
 
             {respostas[perguntaAtual.id] && (
               <p className={styles.arquivoAnexado}>
-                ✅ Arquivo anexado: {respostas[perguntaAtual.id].name}
+                Arquivo anexado com sucesso!: {respostas[perguntaAtual.id].name}
               </p>
             )}
 
@@ -214,8 +244,8 @@ export default function Formulario() {
               </div>
             )}
             <button className={styles.button} onClick={handleProxima}>
-  {indiceAtual === perguntas.length - 1 ? 'Finalizar' : 'Próxima'}
-</button>
+              {indiceAtual === perguntas.length - 1 ? 'Finalizar' : 'Próxima'}
+            </button>
 
           </div>
         )}
@@ -249,3 +279,6 @@ export default function Formulario() {
     </div>
   );
 }
+
+
+

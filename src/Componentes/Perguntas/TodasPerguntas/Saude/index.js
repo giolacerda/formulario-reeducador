@@ -15,13 +15,27 @@ const saude = [
   {
     id: 'usoAnterior',
     tipo: 'texto',
-    pergunta: 'Já utilizou reeducadores ou remédios para emagrecimento?',
+    pergunta: 'Já utilizou reeducadores ou remédios para emagrecimento? (Se sim, Qual?)',
     categoria: 'Saúde',
+  },
+   {
+    id: 'suplementacao',
+    pergunta: 'Faz algum tipo de uso de suplementação com vitamina? (Se sim, Qual?)',
+    tipo: 'texto',
+    categoria: 'Saúde',
+    
+  },
+  {
+    id: 'conheceLinha',
+    pergunta: 'Já conhece nossa linha de reeducadores? (Se sim, Qual?)',
+    tipo: 'texto',
+    categoria: 'Saúde',
+    
   },
   {
     id: 'restricoesMedicas',
     tipo: 'texto',
-    pergunta: 'Possui alguma restrição médica?',
+    pergunta: 'Possui alguma restrição médica? (Se sim, Qual?)',
     categoria: 'Saúde',
   },
   {
@@ -44,9 +58,10 @@ const saude = [
   },
   {
     id: 'imunidade',
-    tipo: 'texto',
+    tipo: 'escolha',
     pergunta: 'Como está sua imunidade atualmente?',
     categoria: 'Saúde',
+     opcoes: ['Boa', 'Ruim', 'Mais ou Menos']
   },
 ];
 
