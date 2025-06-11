@@ -1,14 +1,12 @@
 import './App.css';
-import Formulario  from './Componentes/Formulario';
-
-
-
+import Formulario from './Componentes/Formulario';
 function App() {
   return (
-    <div className="App">
+    <div>
     <Formulario/>
     </div>
   );
 }
 
 export default App;
+

@@ -5,13 +5,19 @@ import logo from '../../assets/logo-reeducador.png';
 import bg from '../../assets/moca-fita.png';
 
 export default function Formulario() {
-  const [mostrarCapa, setMostrarCapa] = useState(true);
+  console.log('Renderizando Formulário...');
+
+
+ const [mostrarCapa, setMostrarCapa] = useState(true);
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [respostas, setRespostas] = useState({});
   const [erro, setErro] = useState(false);
   const [formularioFinalizado, setFormularioFinalizado] = useState(false);
 
   const perguntaAtual = perguntas[indiceAtual];
+  console.log("📦 perguntas:", perguntas);
+console.log("🎯 perguntaAtual:", perguntaAtual);
+
   const progresso = ((indiceAtual + 1) / perguntas.length) * 100;
 
   const handleIniciar = () => {
@@ -33,50 +39,51 @@ export default function Formulario() {
     setRespostas({ ...respostas, [perguntaAtual.id]: e.target.files[0] });
   };
 
-  const enviarFormulario = async () => {
-    // Processa arquivos em base64 (se houver)
-    const dados = {};
+ // Função auxiliar para converter arquivo em base64
+const toBase64 = file =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
 
-    for (const [chave, valor] of Object.entries(respostas)) {
-      if (valor instanceof File) {
-        const base64 = await toBase64(valor);
-        dados["arquivoBase64"] = base64;
-        dados["arquivoNome"] = valor.name;
-      } else {
-        dados[chave] = valor;
-      }
+// Agora pode ser usada dentro de enviarFormulario
+const enviarFormulario = async () => {
+  const dados = {};
+
+  for (const [chave, valor] of Object.entries(respostas)) {
+    if (valor instanceof File) {
+      const base64 = await toBase64(valor);
+      dados["arquivoBase64"] = base64;
+      dados["arquivoNome"] = valor.name;
+    } else {
+      dados[chave] = valor;
     }
-
- try {
-  const response = await fetch(
-    "https://script.google.com/macros/s/AKfycbxiDoRhOFMvJ46jLzhFu9KVI5XQ7utPhYWRMgK3HIh9tneMjWOPqQ4CrT19piMXXgDcoA/exec",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(dados)
-    }
-  );
-
-  if (response.ok) {
-    setFormularioFinalizado(true);
-  } else {
-    console.error("Erro ao enviar formulário.");
   }
-} catch (error) {
-  console.error("Erro de conexão:", error);
-}
 
+  try {
+    const response = await fetch(
+      "https://script.google.com/macros/s/AKfycbxiDoRhOFMvJ46jLzhFu9KVI5XQ7utPhYWRMgK3HIh9tneMjWOPqQ4CrT19piMXXgDcoA/exec",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+      }
+    );
 
-  // Função auxiliar para converter arquivo em base64
-  const toBase64 = file =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
+    if (response.ok) {
+      setFormularioFinalizado(true);
+    } else {
+      console.error("Erro ao enviar formulário.");
+    }
+  } catch (error) {
+    console.error("Erro de conexão:", error);
+  }
+};
+
 
 
   const handleProxima = () => {
@@ -284,5 +291,7 @@ export default function Formulario() {
 }
 
 
-}
+
+
+
 
