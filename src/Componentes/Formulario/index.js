@@ -47,24 +47,27 @@ export default function Formulario() {
       }
     }
 
-    try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbzMAT_lUicliZvePLq_bLO-qaVYGadGwZZ1kBRer3k8nHICSjcpUfOnAFAxK6JhP_eqlw/exec", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-      });
-
-      if (response.ok) {
-        setFormularioFinalizado(true);
-      } else {
-        console.error("Erro ao enviar formulário.");
-      }
-    } catch (error) {
-      console.error("Erro de conexão:", error);
+ try {
+  const response = await fetch(
+    "https://script.google.com/macros/s/AKfycbxiDoRhOFMvJ46jLzhFu9KVI5XQ7utPhYWRMgK3HIh9tneMjWOPqQ4CrT19piMXXgDcoA/exec",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dados)
     }
-  };
+  );
+
+  if (response.ok) {
+    setFormularioFinalizado(true);
+  } else {
+    console.error("Erro ao enviar formulário.");
+  }
+} catch (error) {
+  console.error("Erro de conexão:", error);
+}
+
 
   // Função auxiliar para converter arquivo em base64
   const toBase64 = file =>
@@ -281,4 +284,5 @@ export default function Formulario() {
 }
 
 
+}
 
