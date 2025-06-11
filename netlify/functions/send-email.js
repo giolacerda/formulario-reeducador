@@ -1,6 +1,7 @@
 const { Resend } = require('resend');
 
-const resend = new Resend(process.env.re_XR1nCyen_9FQomFNPX5m7gRpuuU6XaHEv);
+const resend = new Resend('re_XR1nCyen_9FQomFNPX5m7gRpuuU6XaHEv');
+
 
 exports.handler = async (event, context) => {
   try {

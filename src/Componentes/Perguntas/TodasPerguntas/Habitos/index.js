@@ -1,48 +1,49 @@
 const habitos = [
   {
-    id: 'possui_vicio',
+    id: 'habito1',
     tipo: 'texto',
     pergunta: 'Você possui algum vício? Quais?',
     categoria: 'Hábitos',
+    obrigatorio: true,
   },
   {
-    id: 'alimentacao',
+    id: 'habito2',
     tipo: 'escolha',
     pergunta: 'Como é sua alimentação?',
     categoria: 'Hábitos',
     opcoes: ['Saudável', 'Muitos lanches', 'Mista'],
-     obrigatorio: true,
+    obrigatorio: true,
   },
   {
-    id: 'qualidade_sono',
-    tipo: 'escolha',
+    id: 'habito3',
+    tipo: 'texto',
     pergunta: 'Como está sua qualidade de sono?',
     categoria: 'Hábitos',
-    opcoes: [
-      'Excelente – durmo bem todas as noites',
-      'Boa – geralmente durmo bem, com poucas interrupções',
-      'Ruim – durmo pouco ou com muitas interrupções',
-      'Muito ruim – tenho insônia ou quase não durmo'
-    ],
-     obrigatorio: true,
+    
+    obrigatorio: true,
   },
   {
-    id: 'horarios_sono',
-    tipo: 'escolha',
+    id: 'habito4',
+    tipo: 'texto',
     pergunta: 'Quais são seus horários de sono?',
     categoria: 'Hábitos',
-    opcoes: ['Antes das 22h', 'Entre 22h e 00h', 'Depois de 00h'],
-     obrigatorio: true,
+    obrigatorio: true,
   },
   {
-    id: 'atividade_fisica',
+    id: 'habito5',
     tipo: 'escolha',
     pergunta: 'Você pratica atividade física?',
     categoria: 'Hábitos',
     opcoes: ['Sim', 'Não'],
-     obrigatorio: true,
+    obrigatorio: true,
   },
 ];
 
 export default habitos;
+
+
+
+
+
+
 

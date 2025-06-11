@@ -5,16 +5,15 @@ import logo from '../../assets/logo-reeducador.png';
 import bg from '../../assets/moca-fita.png';
 
 export default function Formulario() {
-  
- const [mostrarCapa, setMostrarCapa] = useState(true);
+  console.log('PERGUNTAS CARREGADAS:', perguntas);
+
+  const [mostrarCapa, setMostrarCapa] = useState(true);
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [respostas, setRespostas] = useState({});
   const [erro, setErro] = useState(false);
   const [formularioFinalizado, setFormularioFinalizado] = useState(false);
 
   const perguntaAtual = perguntas[indiceAtual];
-
-
   const progresso = ((indiceAtual + 1) / perguntas.length) * 100;
 
   const handleIniciar = () => {
@@ -33,52 +32,53 @@ export default function Formulario() {
 
   const handleFileChange = (e) => {
     setErro(false);
-    setRespostas({ ...respostas, [perguntaAtual.id]: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      setRespostas({ ...respostas, [perguntaAtual.id]: file });
+    }
   };
 
-// Função auxiliar para converter arquivo em base64
-const toBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-
-// Envia os dados do formulário usando Netlify Function
-const enviarFormulario = async () => {
-  const dados = {};
-
-  for (const [chave, valor] of Object.entries(respostas)) {
-    if (valor instanceof File) {
-      const base64 = await toBase64(valor);
-      dados["arquivoBase64"] = base64;
-      dados["arquivoNome"] = valor.name;
-    } else {
-      dados[chave] = valor;
-    }
-  }
-
-  try {
-    const response = await fetch("/.netlify/functions/send-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados),
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
     });
 
-    if (response.ok) {
-      setFormularioFinalizado(true);
-    } else {
-      console.error("Erro ao enviar formulário.");
+  const enviarFormulario = async () => {
+    const dados = {};
+
+    for (const [chave, valor] of Object.entries(respostas)) {
+      if (valor instanceof File) {
+        const base64 = await toBase64(valor);
+        dados["arquivoBase64"] = base64;
+        dados["arquivoNome"] = valor.name;
+      } else {
+        dados[chave] = valor;
+      }
     }
-  } catch (error) {
-    console.error("Erro de conexão:", error);
-  }
-};
 
+    try {
+      const response = await fetch("/.netlify/functions/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados),
+      });
 
+      if (response.ok) {
+        setFormularioFinalizado(true);
+      } else {
+        console.error("Erro ao enviar formulário.");
+      }
+    } catch (error) {
+      console.error("Erro de conexão:", error);
+    }
+  };
 
-  const handleProxima = () => {
+  const handleProxima = async (e) => {
+    if (e) e.preventDefault();
+
     const respostaAtual = respostas[perguntaAtual.id];
     const obrigatoria = perguntaAtual.obrigatorio !== false;
 
@@ -95,17 +95,14 @@ const enviarFormulario = async () => {
 
     setErro(false);
 
-    // Última pergunta → Finaliza
     if (indiceAtual === perguntas.length - 1) {
-      setFormularioFinalizado(true);
-      enviarFormulario(); // dispara o envio
+      await enviarFormulario();
     } else {
       setIndiceAtual(indiceAtual + 1);
-       setErro(false);
     }
   };
 
-
+  // Capa inicial
   if (mostrarCapa) {
     return (
       <div className={styles.capa}>
@@ -121,6 +118,7 @@ const enviarFormulario = async () => {
     );
   }
 
+  // Finalização
   if (formularioFinalizado) {
     return (
       <div className={styles.finalizado}>
@@ -139,9 +137,11 @@ const enviarFormulario = async () => {
             style={{ width: `${progresso}%` }}
           ></div>
         </div>
+
         <div className={styles.categoria}>{perguntaAtual.categoria}</div>
         <div className={styles.pergunta}>{perguntaAtual.pergunta}</div>
 
+        {/* Tipos de pergunta */}
         {perguntaAtual.tipo === 'texto' && (
           <>
             <input
@@ -151,6 +151,7 @@ const enviarFormulario = async () => {
               onChange={handleInputChange}
             />
             {erro && <div className={styles.erro}>Este campo é obrigatório.</div>}
+            <button className={styles.button} onClick={handleProxima}>Próxima</button>
           </>
         )}
 
@@ -163,6 +164,7 @@ const enviarFormulario = async () => {
               onChange={handleInputChange}
             />
             {erro && <div className={styles.erro}>Por favor, informe um número válido.</div>}
+            <button className={styles.button} onClick={handleProxima}>Próxima</button>
           </>
         )}
 
@@ -181,23 +183,7 @@ const enviarFormulario = async () => {
               </label>
             ))}
             {erro && <div className={styles.erro}>Por favor, selecione uma opção.</div>}
-            <button
-              className={styles.button}
-              onClick={() => {
-                const resposta = respostas[perguntaAtual.id];
-                const obrigatoria = perguntaAtual.obrigatorio !== false;
-
-                if (obrigatoria && !resposta) {
-                  setErro(true);
-                } else {
-                  setErro(false);
-                  handleProxima();
-                }
-              }}
-            >
-              Próxima
-            </button>
-
+            <button className={styles.button} onClick={handleProxima}>Próxima</button>
           </div>
         )}
 
@@ -214,43 +200,43 @@ const enviarFormulario = async () => {
 
             {respostas[perguntaAtual.id] && (
               <p className={styles.arquivoAnexado}>
-                Arquivo anexado com sucesso!: {respostas[perguntaAtual.id].name}
+                Arquivo anexado com sucesso: {respostas[perguntaAtual.id].name}
               </p>
             )}
-
-            {erro && (
-              <div className={styles.erro}>
-                Por favor, anexe um arquivo antes de continuar.
-              </div>
-            )}
-
-            <button className={styles.button} onClick={handleProxima}>
-              Próxima
-            </button>
+            {erro && <div className={styles.erro}>Por favor, anexe um arquivo.</div>}
+            <button className={styles.button} onClick={handleProxima}>Próxima</button>
           </div>
         )}
 
         {perguntaAtual.tipo === 'termo' && (
-          <div className={styles.opcoes}>
-            <label className={styles.checkbox}>
-              <input
-                type="checkbox"
-                checked={respostas[perguntaAtual.id] || false}
-                onChange={(e) => handleResposta(e.target.checked)}
-              />{' '}
-              {perguntaAtual.texto}
-            </label>
-            {erro && (
-              <div className={styles.erro}>
-                Você deve aceitar o termo para continuar.
-              </div>
-            )}
-            <button className={styles.button} onClick={handleProxima}>
-              {indiceAtual === perguntas.length - 1 ? 'Finalizar' : 'Próxima'}
-            </button>
+  <div className={styles.opcoes}>
+    <div className={styles.texto}>
+      <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
+        {perguntaAtual.texto}
+      </pre>
+    </div>
 
-          </div>
-        )}
+    <label className={styles.checkbox}>
+      <input
+        type="checkbox"
+        checked={respostas[perguntaAtual.id] || false}
+        onChange={(e) => handleResposta(e.target.checked)}
+      />
+      <span>Concordo com os termos acima</span>
+    </label>
+
+    {erro && (
+      <div className={styles.erro}>
+        Você deve aceitar o termo para continuar.
+      </div>
+    )}
+
+    <button className={styles.button} onClick={handleProxima}>
+      {indiceAtual === perguntas.length - 1 ? 'Finalizar' : 'Próxima'}
+    </button>
+  </div>
+)}
+
 
         {perguntaAtual.tipo === 'link' && (
           <div className={styles.opcoes}>
@@ -262,29 +248,13 @@ const enviarFormulario = async () => {
             >
               {perguntaAtual.texto}
             </a>
-            <button className={styles.button} onClick={handleProxima}>
-              Próxima
-            </button>
+            <button className={styles.button} onClick={handleProxima}>Próxima</button>
           </div>
         )}
-
-        {perguntaAtual.tipo !== 'termo' &&
-          perguntaAtual.tipo !== 'link' &&
-          perguntaAtual.tipo !== 'escolha' &&
-          perguntaAtual.tipo !== 'simnao' &&
-          perguntaAtual.tipo !== 'arquivo' && (
-            <button className={styles.button} onClick={handleProxima}>
-              Próxima
-            </button>
-          )}
       </div>
     </div>
   );
 }
-
-
-
-
 
 
 
