@@ -1,51 +1,49 @@
 const { Resend } = require('resend');
 
-const resend = new Resend('re_XR1nCyen_9FQomFNPX5m7gRpuuU6XaHEv');
+const resend = new Resend(process.env.re_XR1nCyen_9FQomFNPX5m7gRpuuU6XaHEv);
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Método não permitido' }),
-    };
-  }
-
+exports.handler = async (event, context) => {
   try {
-    const dados = JSON.parse(event.body);
+    const body = JSON.parse(event.body);
 
-    const { arquivoBase64, arquivoNome, ...outrosDados } = dados;
-
-    // Monta o corpo do e-mail com os campos do formulário
-    let corpoTexto = '📥 Nova resposta do formulário:\n\n';
-    for (const chave in outrosDados) {
-      corpoTexto += `${chave}: ${outrosDados[chave]}\n`;
+    // Monta o conteúdo do e-mail com os dados recebidos
+    let html = `<h2>Nova resposta do formulário</h2><ul>`;
+    for (const [chave, valor] of Object.entries(body)) {
+      if (chave !== 'arquivoBase64' && chave !== 'arquivoNome') {
+        html += `<li><strong>${chave}:</strong> ${valor}</li>`;
+      }
     }
+    html += `</ul>`;
 
-    // Envia o e-mail via Resend
-    const response = await resend.emails.send({
-      from: 'Formulário <onboarding@resend.dev>',
+    const emailData = {
+      from: 'Formulário Interativo <Formulário <no-reply@formulario.com>',
       to: 'reeducadoralimentarmanaus@gmail.com',
       subject: 'Nova resposta do formulário',
-      text: corpoTexto,
-      attachments: arquivoBase64
-        ? [
-            {
-              filename: arquivoNome,
-              content: arquivoBase64.split(',')[1],
-              type: arquivoBase64.match(/data:(.*);base64/)[1] || 'application/octet-stream',
-            },
-          ]
-        : [],
-    });
+      html,
+    };
+
+    // Se tiver anexo, adiciona no e-mail
+    if (body.arquivoBase64 && body.arquivoNome) {
+      emailData.attachments = [
+        {
+          filename: body.arquivoNome,
+          content: body.arquivoBase64.split(';base64,').pop(), // Remove prefixo data:...
+          encoding: 'base64',
+        },
+      ];
+    }
+
+    const data = await resend.emails.send(emailData);
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true, message: 'Enviado com sucesso' }),
+      body: JSON.stringify({ success: true, data }),
     };
-  } catch (erro) {
+  } catch (error) {
+    console.error('Erro ao enviar e-mail:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: erro.message }),
+      body: JSON.stringify({ error: 'Erro ao enviar e-mail.' }),
     };
   }
 };

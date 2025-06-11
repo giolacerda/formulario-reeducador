@@ -36,6 +36,16 @@ export default function Formulario() {
     setRespostas({ ...respostas, [perguntaAtual.id]: e.target.files[0] });
   };
 
+// Função auxiliar para converter arquivo em base64
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+// Envia os dados do formulário usando Netlify Function
 const enviarFormulario = async () => {
   const dados = {};
 
@@ -271,6 +281,10 @@ const enviarFormulario = async () => {
     </div>
   );
 }
+
+
+
+
 
 
 
