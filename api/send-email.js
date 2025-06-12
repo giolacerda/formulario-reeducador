@@ -1,46 +1,42 @@
-// api/send-email.js
-
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default async (req, res) => {
+export default async function handler(req, res) {
+  console.log('🔧 Método:', req.method);
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Método não permitido' });
+    return res.status(405).json({ message: 'Método não permitido' });
   }
 
-  const { nome, email, respostas, arquivoBase64, arquivoNome } = req.body;
-
-  const htmlRespostas = Object.entries(respostas || {}).map(
-    ([chave, valor]) => `<p><strong>${chave}:</strong> ${valor}</p>`
-  ).join('');
-
-  const attachments = arquivoBase64 && arquivoNome ? [
-    {
-      filename: arquivoNome,
-      content: arquivoBase64,
-    }
-  ] : [];
+  const { arquivoBase64, arquivoNome, ...dados } = req.body;
+  console.log('📨 Dados recebidos:', dados);
 
   try {
+    const htmlContent = Object.entries(dados)
+      .map(([chave, valor]) => `<p><strong>${chave}:</strong> ${valor}</p>`)
+      .join('');
+
+    const attachments = arquivoBase64
+      ? [{
+          content: arquivoBase64.split(',')[1],
+          filename: arquivoNome,
+          type: 'application/octet-stream',
+          disposition: 'attachment',
+        }]
+      : [];
+
     const data = await resend.emails.send({
-      from: 'Formulário Reeducador <nao-responda@reeducadoralimentarmanaus.com>',
+      from: 'Formulario <onboarding@resend.dev>',
       to: ['reeducadoralimentarmanaus@gmail.com'],
-      subject: `Nova avaliação - ${nome || 'Anônimo'}`,
-      html: `
-        <h2>Nova avaliação recebida</h2>
-        <p><strong>Nome:</strong> ${nome}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <hr />
-        ${htmlRespostas}
-      `,
+      subject: 'Nova resposta do formulário',
+      html: htmlContent,
       attachments,
     });
 
-    res.status(200).json({ success: true, data });
+    console.log('✅ Email enviado com sucesso', data);
+    return res.status(200).json({ message: 'Email enviado com sucesso' });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message || 'Erro ao enviar email' });
+    console.error('❌ Erro ao enviar o email:', error);
+    return res.status(500).json({ message: 'Erro ao enviar email', error: error.message });
   }
-};
-
-
+}
