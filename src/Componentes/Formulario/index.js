@@ -5,7 +5,7 @@ import logo from '../../assets/logo-reeducador.png';
 import bg from '../../assets/moca-fita.png';
 
 export default function Formulario() {
-  console.log('PERGUNTAS CARREGADAS:', perguntas);
+ 
 
   const [mostrarCapa, setMostrarCapa] = useState(true);
   const [indiceAtual, setIndiceAtual] = useState(0);
@@ -38,43 +38,45 @@ export default function Formulario() {
     }
   };
 
+
   const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
+const enviarFormulario = async () => {
+  const dados = {};
+
+  for (const [chave, valor] of Object.entries(respostas)) {
+    if (valor instanceof File) {
+      const base64 = await toBase64(valor);
+      dados["arquivoBase64"] = base64;
+      dados["arquivoNome"] = valor.name;
+    } else {
+      dados[chave] = valor;
+    }
+  }
+
+  try {
+    const response = await fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados),
     });
 
-  const enviarFormulario = async () => {
-    const dados = {};
-
-    for (const [chave, valor] of Object.entries(respostas)) {
-      if (valor instanceof File) {
-        const base64 = await toBase64(valor);
-        dados["arquivoBase64"] = base64;
-        dados["arquivoNome"] = valor.name;
-      } else {
-        dados[chave] = valor;
-      }
+    if (response.ok) {
+      setFormularioFinalizado(true);
+    } else {
+      console.error("Erro ao enviar formulário.");
     }
+  } catch (error) {
+    console.error("Erro de conexão:", error);
+  }
+};
 
-    try {
-      const response = await fetch("/.netlify/functions/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados),
-      });
-
-      if (response.ok) {
-        setFormularioFinalizado(true);
-      } else {
-        console.error("Erro ao enviar formulário.");
-      }
-    } catch (error) {
-      console.error("Erro de conexão:", error);
-    }
-  };
 
   const handleProxima = async (e) => {
     if (e) e.preventDefault();
