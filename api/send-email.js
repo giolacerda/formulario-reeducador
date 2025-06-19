@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     const data = await resend.emails.send({
       from: 'Reeducador Alimentar <contato@reeducadoralimentarmanaus.com.br>',
-      to: ['reeducadoralimentarmanaus@gmail.com.br'],
+      to: ['reeducadoralimentarmanaus@gmail.com'],
       subject: 'Nova resposta do formulário',
       html: htmlContent,
       attachments,
