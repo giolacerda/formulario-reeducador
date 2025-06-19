@@ -1,5 +1,5 @@
 import './App.css';
-import Formulario from './Componentes/Formulario.js';
+import Formulario from './Componentes/Formulario/index.js';
 function App() {
   return (
     <div>
