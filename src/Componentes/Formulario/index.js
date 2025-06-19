@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Formulario.module.css';
-import perguntas from '../Perguntas/TodasPerguntas';
+import perguntas from '../Perguntas/TodasPerguntas/index.js';
 import logo from '../../assets/logo-reeducador.png';
 import bg from '../../assets/moca-fita.png';
 

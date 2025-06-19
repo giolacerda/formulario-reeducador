@@ -1,9 +1,9 @@
-import dadosPessoais from "./DadosPessoais";
-import avaliacaoFisica from "./AvaliacoesFisica";
-import habitos from "./Habitos";
-import saude from "./Saude";
-import indicacao from "./Indicacao";
-import termos from "./Termos";
+import dadosPessoais from "./DadosPessoais/index.js";
+import avaliacaoFisica from "./AvaliacoesFisica/index.js";
+import habitos from "./Habitos/index.js";
+import saude from "./Saude/index.js";
+import indicacao from "./Indicacao/index.js";
+import termos from "./Termos/index.js";
 
 
 
