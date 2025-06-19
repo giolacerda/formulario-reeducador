@@ -17,7 +17,7 @@ const dadosPessoais = [
     pergunta: 'Qual é o seu endereço?',
     categoria: 'Dados Pessoais',
   },
- 
+
 ];
 
 export default dadosPessoais;

@@ -18,11 +18,11 @@ const avaliacaoFisica = [
     categoria: 'Avaliação Física',
   },
   {
-  id: 'foto_corpo',
-  categoria: 'Avaliação Física',
-  pergunta: 'Anexe uma foto de corpo inteiro para acompanhamento',
-  tipo: 'arquivo'
-}
+    id: 'foto_corpo',
+    categoria: 'Avaliação Física',
+    pergunta: 'Anexe uma foto de corpo inteiro para acompanhamento',
+    tipo: 'arquivo'
+  }
 
 ];
 
